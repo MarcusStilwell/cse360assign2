@@ -7,7 +7,7 @@ package cse360assign2;
 import java.util.Arrays;
 
 public class SimpleList {
-	public int[] list;
+	public int[] list = new int [10];
 	public int count;
 	
 	//Constructor method initializes count to 0.
@@ -20,23 +20,24 @@ public class SimpleList {
 	//of list is less than 10. intIndex tracks the index of the element in the array that
 	//is being changed
 	
+	//Version 1.1 of the add method added the function to increase the size of the list
+	//by 50% if the array was full when the user tried to add a new element. The add
+	//method was also adjusted to fit the dynamic array better.
+	
 	public void add(int addInput){
-		if(list == null){
-			list = new int[1];
-			list[0] = addInput;
-		}
-		else if(list.length <= 9) {
+		if(count < list.length-1) {
 			int[] newList = new int [list.length+1];
 			newList[0] = addInput;
-			for(int i=0;i<list.length;i++) {
-				newList[i+1] = list[i];
+			for(int i = count; i > 0; i--) {
+				list[i] = list[i - 1];
 			}
 			list=newList;
 		}
 		else{
-			for(int intIndex=list.length-1;intIndex>1;intIndex--) {
-				list[intIndex] = list[intIndex]-1;
-				list[0] = addInput;
+			int[] newList = new int [(int) (list.length * 1.5)];
+			newList[0] = addInput;
+			for(int i = 0; i < list.length; i++) {
+				newList[i+1] = list[i];
 			}
 		}
 		count++;
@@ -46,15 +47,25 @@ public class SimpleList {
 	//to move the values in the array forward to fill in the empty value left behind when
 	//the element removeInput is deleted.
 	
+	//Version 1.1 of the remove method left the original remove code in place, but added
+	//a feature that reduces the size of the list array if it is at least 25% empty.
+	
 	public void remove(int removeInput) {
-		for(int intIndex=0;intIndex<list.length-1;intIndex++) {
-			if(list[intIndex] == removeInput) {
-				for(int newIndex=intIndex;newIndex<list.length-1;newIndex++) {
-					list[newIndex] = list[newIndex+1];
+		if (count < list.length / 4 * 3) {
+			int[] newList = new int [list.length * 4 / 3];
+			for(int i = 0; i <newList.length;i++) {
+				newList[i] = list[i];
+			}
+			list = newList;
+		}
+			for(int intIndex=0;intIndex<list.length-1;intIndex++) {
+				if(list[intIndex] == removeInput) {
+					for(int newIndex=intIndex;newIndex<list.length-1;newIndex++) {
+						list[newIndex] = list[newIndex+1];
+					}
 				}
 			}
-		}
-		count--;
+			count--;
 	}
 	
 	public int count() {
@@ -90,4 +101,66 @@ public class SimpleList {
 		return -1;
 	}
 	
+	
+	//The following code is my way of coding in an IDE to make the requested methods, but
+	//I am not sure where they are supposed to go
+
+
+	public void append(int appendInt){
+		if(count < list.length-1) {
+			list[count + 1] = appendInt;
+		}
+		else {
+			int[] newList = new int[(int) (list.length * 1.5)];
+			for(int countIterator = 0; countIterator < count; countIterator++) {
+				newList[countIterator] = list[countIterator];
+			}
+			list = newList;
+			list[count] = appendInt;
+			count++;
+		}
+	}
+	
+	//This function returns the first element in the array.
+	public int first() {
+		for(int indexOfArray: list) {
+			if(list[indexOfArray] != 0) {
+				return list[indexOfArray];
+			}
+		}
+		return -1;
+	}
+	
+	//Because an array index cannot be empty, I checked to see if the value at the
+	//index was 0 because that is the default value.
+	
+	//numOfelements is an integer that keeps track of all of the non zero elements in 
+	//the array.
+	// iterator keeps track of the place in the array, and list is the simplelist 
+	//created earlier in the program.
+	public int size() {
+		int numOfElements = 0;
+		for(int iterator = 0; iterator < list.length; iterator++) {
+			if(list[iterator] != 0) {
+				numOfElements++;
+			}
+		}
+		return numOfElements;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
